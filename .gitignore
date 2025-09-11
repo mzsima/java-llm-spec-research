@@ -1,0 +1,16 @@
+# Build
+/target/
+/build/
+/out/
+
+# IDE
+*.iml
+.idea/
+.vscode/
+
+# Logs
+*.log
+notes/*.tmp
+
+# Generated code artifacts
+/generated/*.class
