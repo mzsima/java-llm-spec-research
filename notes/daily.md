@@ -204,3 +204,24 @@ APIがある場合、エラーコード体系を定義して返しますか？
 ## 所感
 - 予定外の緑化だが、研究データとして重要。
 - 今後はこの事象を考慮し、骨格生成がどの程度仕様を満たしてしまうかも評価対象に加える。
+
+# Day5 Log
+
+## 実装とテスト実行
+- 重複貸出テストの失敗を解消するため、設計整合を取る修正を実施。
+- app/src/main/java に LoanRepository インタフェースを新規追加。
+- BookLendingService を修正し、LoanRepository をコンストラクタ注入する方式に変更。
+- lend() 内で loanRepository.hasActiveLoan(...) を参照して重複判定、成功時には loanRepository.addLoan(...) を呼ぶようにした。
+- BookLendingServiceTest を修正し、LoanRepository スタブを生成して注入する形に統一。
+- ./gradlew test を実行。
+
+## 実行結果
+- 通常本14日 → passed
+- 人気本7日 → passed
+- 重複貸出 → passed
+- ログ保存: notes/day5_test.log
+
+## 所感
+- LoanRepository を共有契約として導入することで、テストと実装の前提が一致。
+- 設計整合を取ることで、仕様→テスト→実装の一貫性を担保できた。
+- LLM骨格生成による in-memory Set 実装とテスト前提の差異が浮き彫りになり、曖昧性解消プロセスの一例として有益。

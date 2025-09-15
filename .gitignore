@@ -16,6 +16,7 @@ notes/*.tmp
 /generated/*.class
 # Ignore Gradle project-specific cache directory
 .gradle
+.gradle-home/
 
 # Ignore Gradle build output directory
 build

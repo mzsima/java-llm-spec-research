@@ -12,6 +12,19 @@ public class BookLendingService {
     // Spec constants
     public static final int NORMAL_PERIOD_DAYS = 14;
     public static final int POPULAR_PERIOD_DAYS = 7;
+    
+    // Day5 implement: repository dependency via constructor injection
+    private final LoanRepository loanRepository;
+
+    // Day5 implement: constructor for DI
+    public BookLendingService(LoanRepository loanRepository) {
+        this.loanRepository = loanRepository;
+    }
+
+    // Day5 fix: reset helper for tests (no-op after DI)
+    public static void clearLoansForTest() {
+        // no-op
+    }
 
     /**
      * Lend a book to a user.
@@ -28,13 +41,17 @@ public class BookLendingService {
             throw new IllegalArgumentException("user, book, and borrowedAt must be non-null");
         }
 
+        // Day5 implement: repository-based duplicate check
+        if (loanRepository.hasActiveLoan(user.id(), book.id())) {
+            throw new IllegalStateException("Duplicate lending is not allowed for the same user and book");
+        }
+
         // Dummy logic: choose period based on popularity flag only.
         int days = book.isPopular() ? POPULAR_PERIOD_DAYS : NORMAL_PERIOD_DAYS;
 
-        // NOTE: Duplicate lending check is intentionally not implemented.
-        // TODO: implement
-
+        // Day5 implement: record loan in repository
         LocalDate dueDate = borrowedAt.plusDays(days);
+        loanRepository.addLoan(user.id(), book.id(), dueDate);
         return new LoanRecord(user.id(), book.id(), dueDate);
     }
 
@@ -55,4 +72,3 @@ record User(String id) { }
  * TODO: implement
  */
 record Book(String id, boolean isPopular) { }
-
